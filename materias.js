@@ -7,7 +7,11 @@ Vue.component('component-materias',{
             materia:{
                 idMateria : '',
                 codigo : '',
-                nombre : '',
+                materia : '',
+                docente : '',
+                horario : '',
+                ciclo : '',
+                
             }
         }
     },
@@ -23,7 +27,7 @@ Vue.component('component-materias',{
             this.nuevoMateria();
         },
         eliminarMateria(materia){
-            if( confirm(`Esta seguro de eliminar a ${materia.nombre}?`) ){
+            if( confirm(`Esta seguro de eliminar a ${materia.materia}?`) ){
                 let store = this.abrirStore('tblmaterias', 'readwrite'),
                     req = store.delete(materia.idMateria);
                 req.onsuccess = resp=>{
@@ -35,7 +39,11 @@ Vue.component('component-materias',{
             this.accion = 'nuevo';
             this.materia.idMateria = '';
             this.materia.codigo = '';
-            this.materia.nombre = '';
+            this.materia.materia = '';
+            this.materia.docente = '';
+            this.materia.horario = '';
+            this.materia.ciclo = '';
+            
             
         },
         modificarMateria(materia){
@@ -47,9 +55,9 @@ Vue.component('component-materias',{
                 data = store.getAll();
             data.onsuccess = resp=>{
                 this.materias = data.result
-                .filter(materia=>materia.nombre.toLowerCase().indexOf(this.buscar.toLowerCase())>-1||
+                .filter(materia=>materia.materia.toLowerCase().indexOf(this.buscar.toLowerCase())>-1||
                 materia.codigo.indexOf(this.buscar)>-1 ||
-                materia.nombre.indexOf(this.buscar)>-1
+                materia.materia.indexOf(this.buscar)>-1
               );
             };
         },
@@ -88,7 +96,7 @@ Vue.component('component-materias',{
                         <form id="frmMateria" @reset.prevent="nuevoMateria" v-on:submit.prevent="guardarMateria">
                             <div class="row p-1">
                                 <div class="col-3 col-md-2">
-                                    <label for="txtCodigoMateria">CODIGO:</label>
+                                    <label for="txtCodigoMateria">Codigo:</label>
                                 </div>
                                 <div class="col-3 col-md-3">
                                     <input required pattern="[0-9]{3}" 
@@ -98,13 +106,61 @@ Vue.component('component-materias',{
                             </div>
                             <div class="row p-1">
                                 <div class="col-3 col-md-2">
-                                    <label for="txtNombreMateria">NOMBRE:</label>
+                                    <label for="txtNombreMateria">Materia:</label>
                                 </div>
                                 <div class="col-9 col-md-6">
                                     <input required pattern="[A-Za-zÑñáéíóú ]{3,75}"
-                                        v-model="materia.nombre" type="text" class="form-control" name="txtNombreMateria" id="txtNombreMateria">
+                                        v-model="materia.materia" type="text" class="form-control" name="txtNombreMateria" id="txtNombreMateria">
                                 </div>
                             </div>
+                            <div class="row p-1">
+                            <div class="col-3 col-md-2">
+                                <label for="txtDocenteMateria">Docente:</label>
+                            </div>
+                            <div class="col-9 col-md-6">
+                                <input required pattern="[A-Za-zÑñáéíóú ]{3,75}"
+                                    v-model="materia.docente" type="text" class="form-control" name="txtDocenteMateria" id="txtDocenteMateria">
+                            </div>
+                        </div>
+
+                        <div class="row p-1">
+                        <div class="col-3 col-md-2">
+                          <label for="ciclo">Ciclo:</label>
+                        </div>
+                        <div class="col-9 col-md-6">
+                          <select v-model="materia.ciclo" name="txtCicloMateria" id="txtCicloMateria">
+                            <option value="" disabled>Selecciona tu ciclo</option>
+                            <option value="ciclo 1">ciclo 1</option>
+                            <option value="ciclo 2">ciclo 2</option>
+                            <option value="ciclo 3">ciclo 3</option>
+                            <option value="ciclo 4">ciclo 4</option>
+                            <option value="ciclo 5">ciclo 5</option>
+                            <option value="ciclo 6">ciclo 6</option>
+                            <option value="ciclo 7">ciclo 7</option>
+                            <option value="ciclo 8">ciclo 8</option>
+                            <option value="ciclo 9">ciclo 9</option>
+                            <option value="ciclo 10">ciclo 10</option>
+                          </select>
+                        </div>
+                      </div>
+
+                            <div class="row p-1">
+  <div class="col-3 col-md-2">
+    <label for="horario">Horario:</label>
+  </div>
+  <div class="col-9 col-md-6">
+    <select v-model="materia.horario" name="txtHorarioMateria" id="txtHorarioMateria">
+      <option value="" disabled>Selecciona un horario</option>
+      <option value="7:00am - 8:50am">7:00am - 8:50am</option>
+      <option value="9:00am - 10:50am">9:00am - 10:50am</option>
+      <option value="11:00am - 12:50pm">11:00am - 12:50pm</option>
+      <option value="1:00pm - 2:50pm">1:00pm - 2:50pm</option>
+      <option value="3:00pm - 4:50pm">3:00pm - 4:50pm</option>
+      <option value="5:00pm - 6:50pm">5:00pm - 6:50pm</option>
+    </select>
+  </div>
+</div>
+
                             <div class="row p-1">
                                 <div class="col-3 col-md-3">
                                     <input class="btn btn-primary" type="submit" 
@@ -128,17 +184,24 @@ Vue.component('component-materias',{
                                     <th>BUSCAR:</th>
                                     <th colspan="2"><input type="text" class="form-control" v-model="buscar"
                                         @keyup="listarMaterias()"
-                                        placeholder="Buscar por codigo o nombre"></th>
+                                        placeholder="Buscar por codigo o materia></th>
                                 </tr>
                                 <tr>
-                                    <th>CODIGO</th>
-                                    <th colspan="2">NOMBRE</th>
+                                    <th>Codigo</th>
+                                    <th colspan="2">Materia</th>                                
+                                    <th colspan="2">Docente</th>
+                                    <th colspan="2">Horario</th>
+                                    <th colspan="2">Ciclo</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="materia in materias" :key="materia.idMateria" @click="modificarMateria(materia)" >
                                     <td>{{ materia.codigo }}</td>
-                                    <td>{{ materia.nombre }}</td>
+                                    <td>{{ materia.materia }}</td>
+                                    <td>{{ materia.docente }}</td>
+                                    <td>{{ materia.horario }}</td>
+                                    <td>{{ materia.ciclo }}</td>
+                                    
                                     <td><button class="btn btn-danger" @click="eliminarMateria(materia)">ELIMINAR</button></td>
                                 </tr>
                             </tbody>
